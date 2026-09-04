@@ -36,6 +36,6 @@
     </SourceDirectories>
 
     <!-- The commit the PluginHub build compiles. Pinned after the repo is pushed. -->
-    <Commit>PENDING</Commit>
+    <Commit>129cf4a93959c07ced96fc097e7741ffc6752633</Commit>
 
 </PluginData>
