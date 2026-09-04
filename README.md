@@ -40,6 +40,7 @@ All settings are persisted to the config file.
 | `/belt info` | Ring/tube dimensions and your distance from the ring centerline |
 | `/belt here` | Add/remove the current world from the draw list |
 | `/belt reload` | Re-read the config file and rebuild geometry |
+| `/belt color <#hex>` | Line color as `#RRGGBB` (e.g. `#5EF10D`), or `#RRGGBBAA` to set opacity too |
 | `/belt scale <v>` | Line thickness per meter of distance (default `0.0015` ≈ 1 px at 1080p) |
 | `/belt alpha <0-255>` | Line opacity (default `40`, matching NavMarkers' subtle look) |
 

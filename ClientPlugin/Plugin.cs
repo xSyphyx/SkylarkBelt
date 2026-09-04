@@ -309,11 +309,35 @@ public class Plugin : IPlugin
                 else
                     Message($"Alpha = {config.ColorA} — set with /belt alpha <0-255>");
                 break;
+            case "color":
+                if (args.Length > 2)
+                {
+                    byte r, g, b, a;
+                    bool hasAlpha;
+                    if (TryParseHexColor(args[2], out r, out g, out b, out a, out hasAlpha))
+                    {
+                        config.ColorR = r;
+                        config.ColorG = g;
+                        config.ColorB = b;
+                        if (hasAlpha)
+                            config.ColorA = a;
+                        config.Save();
+                        RebuildRenderState();
+                        Message(hasAlpha
+                            ? $"Color = #{r:X2}{g:X2}{b:X2}, alpha = {a}"
+                            : $"Color = #{r:X2}{g:X2}{b:X2}");
+                    }
+                    else
+                        Message("Usage: /belt color #5EF10D  (6 hex digits, or 8 for #RRGGBBAA)");
+                }
+                else
+                    Message($"Color = {CurrentColorHex()} — set with /belt color #RRGGBB");
+                break;
             case "info":
                 ShowInfo();
                 break;
             default:
-                Message("Commands: /belt (toggle), on, off, info, reload, here, scale <v>, alpha <0-255>");
+                Message("Commands: /belt (toggle), on, off, info, reload, here, color <#hex>, scale <v>, alpha <0-255>");
                 break;
         }
     }
@@ -355,6 +379,56 @@ public class Plugin : IPlugin
 
         Message($"Ring {config.MajorRadius / 1000:N0} km, tube {config.MinorRadius / 1000:N0} km, world draw: {(drawThisWorld && config.Enabled ? "on" : "off")}");
         Message($"You are {fromCenterline / 1000:N0} km from the Belt centerline ({(inside ? "inside" : "outside")} the tube)");
+    }
+
+    private string CurrentColorHex()
+    {
+        return $"#{config.ColorR:X2}{config.ColorG:X2}{config.ColorB:X2}";
+    }
+
+    // Parses "#RRGGBB" or "#RRGGBBAA" (the leading # is optional). Alpha is only reported
+    // via hasAlpha when 8 digits are supplied, so a 6-digit value leaves alpha unchanged.
+    private static bool TryParseHexColor(string text, out byte r, out byte g, out byte b, out byte a, out bool hasAlpha)
+    {
+        r = 0;
+        g = 0;
+        b = 0;
+        a = 255;
+        hasAlpha = false;
+
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        string hex = text.Trim();
+        if (hex.StartsWith("#"))
+            hex = hex.Substring(1);
+        if (hex.Length != 6 && hex.Length != 8)
+            return false;
+
+        for (int i = 0; i < hex.Length; i++)
+        {
+            char c = hex[i];
+            bool isHexDigit = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+            if (!isHexDigit)
+                return false;
+        }
+
+        try
+        {
+            r = Convert.ToByte(hex.Substring(0, 2), 16);
+            g = Convert.ToByte(hex.Substring(2, 2), 16);
+            b = Convert.ToByte(hex.Substring(4, 2), 16);
+            if (hex.Length == 8)
+            {
+                a = Convert.ToByte(hex.Substring(6, 2), 16);
+                hasAlpha = true;
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static void Message(string text)
