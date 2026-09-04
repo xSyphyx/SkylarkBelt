@@ -36,6 +36,6 @@
     </SourceDirectories>
 
     <!-- The commit the PluginHub build compiles. Pinned after the repo is pushed. -->
-    <Commit>129cf4a93959c07ced96fc097e7741ffc6752633</Commit>
+    <Commit>bb045133fe0e44aee09667ef94cfc330f904ed91</Commit>
 
 </PluginData>
