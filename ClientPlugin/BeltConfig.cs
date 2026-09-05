@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using VRage.FileSystem;
 
 namespace ClientPlugin;
 
@@ -50,8 +51,7 @@ public class BeltConfig
     {
         get
         {
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(appData, "SpaceEngineers", "Storage", "SkylarkBelt.cfg");
+            return Path.Combine(MyFileSystem.UserDataPath, "Storage", "SkylarkBelt.cfg");
         }
     }
 
