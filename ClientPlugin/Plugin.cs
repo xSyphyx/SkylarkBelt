@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Sandbox.Game.Gui;
 using Sandbox.Game.World;
 using Sandbox.ModAPI;
 using VRage.Game;
@@ -62,7 +63,9 @@ public class Plugin : IPlugin
             if (!drawThisWorld || config == null || !config.Enabled)
                 return;
 
-            if (MyAPIGateway.Session.Config != null && MyAPIGateway.Session.Config.HudState == 0)
+            // Gate on the live HUD state (same as the game's own MyHudMarkerRender), not the
+            // persisted config value — so Tab toggling the HUD hides/shows the torus immediately.
+            if (MyHud.HudState == 0 || !MyHud.IsVisible)
                 return;
 
             var camera = MyAPIGateway.Session.Camera;
